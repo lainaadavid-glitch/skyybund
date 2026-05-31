@@ -410,6 +410,7 @@ function calculate() {
 </script>
 <script type="module" src="./firebase.js"></script>
   <script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -417,7 +418,7 @@ import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12
 const firebaseConfig = {
   apiKey: "YOUR_KEY",
   authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_ID",
+  projectId: "YOUR_PROJECT",
   databaseURL: "YOUR_DB_URL"
 };
 
@@ -425,9 +426,15 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 document.getElementById("withdrawBtn").addEventListener("click", () => {
+
   const amount = document.querySelector("input[placeholder='5000']").value;
   const bank = document.querySelector("input[placeholder='Bank Name']").value;
   const account = document.querySelector("input[placeholder='Account Number']").value;
+
+  if (!amount || !bank || !account) {
+    alert("Fill all fields first");
+    return;
+  }
 
   push(ref(db, "withdrawals"), {
     amount,
@@ -439,6 +446,7 @@ document.getElementById("withdrawBtn").addEventListener("click", () => {
 
   alert("Withdrawal request received 🚀");
 });
+</script>
 </script>
 </body>
 </html>
