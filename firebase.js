@@ -1,16 +1,25 @@
-\<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, push } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: "...",
   authDomain: "skyybund.firebaseapp.com",
   projectId: "skyybund",
-  storageBucket: "skyybund.appspot.com",
-  messagingSenderId: "789154861574",
-  appId: "1:789154861574:web:2dcfee93e36895a605a987"
+  databaseURL: "https://skyybund-default-rtdb.firebaseio.com", // IMPORTANT
 };
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-</script>
+const db = getDatabase(app);
+
+// button click
+document.getElementById("withdrawBtn").addEventListener("click", function () {
+  push(ref(db, "withdrawals"), {
+    name: "User",
+    amount: 5000,
+    bank: "GTBank",
+    account: "1234567890",
+    time: Date.now()
+  });
+
+  alert("Withdrawal request sent!");
+});
