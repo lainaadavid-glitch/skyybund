@@ -354,7 +354,7 @@
         <input type="number" placeholder="5000">
       </div>
 
-      <button class="form-submit">Request Withdrawal</button>
+      <button class="form-submit" id="withdrawBtn">Request Withdrawal</button>
     </div>
 
   </div>
@@ -408,6 +408,11 @@ function calculate() {
 }
 </script>
 <script type="module" src="./firebase.js"></script>
-  
+  <script>
+document.getElementById("withdrawBtn").addEventListener("click", function () {
+  console.log("Withdraw button clicked!");
+  alert("Withdrawal request received");
+});
+</script>
 </body>
 </html>
