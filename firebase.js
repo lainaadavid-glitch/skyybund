@@ -1,19 +1,22 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCealI_1It7_F_epQdSNEkfWUgLAK-ACX0",
+  authDomain: "skyybund.firebaseapp.com",
+  projectId: "skyybund",
+  storageBucket: "skyybund.firebasestorage.app",
+  messagingSenderId: "789154861574",
+  appId: "1:789154861574:web:2dcfee93e36895a605a987",
+  measurementId: "G-1XY1Q33L74"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Export services
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+// Safe analytics (won’t break site)
+let analytics;
+if (typeof window !== "undefined") {
+  analytics = getAnalytics(app);
+}
+
+export default app;
