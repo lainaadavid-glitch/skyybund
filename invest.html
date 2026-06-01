@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invest - SkyyBund</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#f4f6f9;
+padding:20px;
+}
+
+header{
+background:#0A2540;
+color:white;
+padding:15px 20px;
+border-radius:10px;
+margin-bottom:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+font-size:24px;
+font-weight:bold;
+color:#FFD700;
+}
+
+.back-btn{
+background:#FFD700;
+color:#0A2540;
+border:none;
+padding:10px 15px;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.back-btn:hover{
+background:#FFC700;
+}
+
+.container{
+max-width:1200px;
+margin:0 auto;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 2px 15px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+h1{
+color:#0A2540;
+margin-bottom:10px;
+}
+
+.subtitle{
+color:#666;
+margin-bottom:25px;
+font-size:14px;
+}
+
+.products-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+gap:20px;
+margin-bottom:30px;
+}
+
+.product-card{
+background:white;
+border:2px solid #E0E0E0;
+border-radius:10px;
+padding:20px;
+transition:0.3s;
+cursor:pointer;
+}
+
+.product-card:hover{
+border-color:#0A2540;
+box-shadow:0 5px 20px rgba(10, 37, 64, 0.2);
+transform:translateY(-5px);
+}
+
+.product-card.selected{
+border-color:#FFD700;
+background:#FFFEF0;
+box-shadow:0 5px 20px rgba(255, 215, 0, 0.3);
+}
+
+.product-header{
+display:flex;
+justify-content:space-between;
+align-items:start;
+margin-bottom:15px;
+}
+
+.product-name{
+color:#0A2540;
+font-weight:bold;
+font-size:18px;
+}
+
+.product-type{
+background:#E7F5FF;
+color:#0A2540;
+padding:5px 10px;
+border-radius:5px;
+font-size:12px;
+font-weight:bold;
+}
+
+.product-description{
+color:#666;
+font-size:13px;
+margin-bottom:15px;
+line-height:1.5;
+}
+
+.product-details{
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-bottom:15px;
+}
+
+.detail-item{
+display:flex;
+justify-content:space-between;
+padding:8px 0;
+border-bottom:1px solid #f0f0f0;
+font-size:13px;
+}
+
+.detail-label{
+color:#666;
+font-weight:bold;
+}
+
+.detail-value{
+color:#0A2540;
+font-weight:bold;
+}
+
+.product-return{
+background:#A8E6CF;
+color:#00A854;
+padding:10px;
+border-radius:5px;
+text-align:center;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+.investment-amount{
+font-size:24px;
+color:#FF6B6B;
+font-weight:bold;
+text-align:center;
+margin-bottom:10px;
+}
+
+.select-btn{
+width:100%;
+padding:12px;
+background:#0A2540;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.select-btn:hover{
+background:#051a2a;
+}
+
+.product-card.selected .select-btn{
+background:#FFD700;
+color:#0A2540;
+}
+
+.investment-form{
+background:#f9f9f9;
+padding:20px;
+border-radius:10px;
+margin-top:20px;
+}
+
+.form-group{
+margin-bottom:15px;
+}
+
+.form-group label{
+display:block;
+color:#0A2540;
+font-weight:bold;
+margin-bottom:8px;
+}
+
+.form-group input,
+.form-group select{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:5px;
+box-sizing:border-box;
+font-size:14px;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+outline:none;
+border-color:#0A2540;
+box-shadow:0 0 5px rgba(10, 37, 64, 0.2);
+}
+
+.form-row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.alert{
+padding:15px;
+border-radius:5px;
+margin-bottom:15px;
+display:none;
+animation:slideDown 0.3s ease;
+}
+
+.alert.error{
+background:#FFE9E9;
+color:#C1121F;
+border-left:4px solid #C1121F;
+}
+
+.alert.info{
+background:#E7F5FF;
+color:#0A2540;
+border-left:4px solid #0A2540;
+}
+
+.alert.success{
+background:#E9FFE9;
+color:#2B8A3E;
+border-left:4px solid #2B8A3E;
+}
+
+@keyframes slideDown{
+from{
+opacity:0;
+transform:translateY(-10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.buttons{
+display:flex;
+gap:10px;
+margin-top:20px;
+}
+
+.btn-submit{
+flex:1;
+padding:12px;
+background:#51CF66;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.btn-submit:hover{
+background:#40C057;
+}
+
+.btn-submit:disabled{
+opacity:0.5;
+cursor:not-allowed;
+}
+
+.btn-reset{
+flex:1;
+padding:12px;
+background:#999;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.btn-reset:hover{
+background:#777;
+}
+
+.summary-box{
+background:#E7F5FF;
+border-left:4px solid #0A2540;
+padding:15px;
+border-radius:5px;
+margin-top:15px;
+}
+
+.summary-item{
+display:flex;
+justify-content:space-between;
+margin:8px 0;
+color:#0A2540;
+}
+
+.summary-item strong{
+font-weight:bold;
+}
+
+.loading{
+display:none;
+text-align:center;
+color:#0A2540;
+}
+
+.loading::after{
+content:" •••";
+animation:dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+0%, 20% { content:" •"; }
+40% { content:" ••"; }
+60% { content:" •••"; }
+100% { content:" "; }
+}
+
+.no-product-selected{
+color:#999;
+font-style:italic;
+text-align:center;
+padding:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">SkyyBund</div>
+<button class="back-btn" id="backBtn">← Dashboard</button>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h1>📈 Investment Products</h1>
+<p class="subtitle">Choose an investment product and start growing your wealth. Minimum investment: ₦5,000</p>
+
+<div id="alertMsg" class="alert"></div>
+
+<!-- PRODUCTS GRID -->
+<div class="products-grid" id="productsGrid">
+<div class="product-card" onclick="selectProduct(this, 'gold')">
+<div class="product-header">
+<div class="product-name">🥇 Gold Plan</div>
+<div class="product-type">POPULAR</div>
+</div>
+<p class="product-description">Secure your investment in precious metals with guaranteed returns.</p>
+
+<div class="product-details">
+<div class="detail-item">
+<span class="detail-label">Minimum:</span>
+<span class="detail-value">₦5,000</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Duration:</span>
+<span class="detail-value">12 months</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Risk Level:</span>
+<span class="detail-value">Low</span>
+</div>
+</div>
+
+<div class="product-return">15% Annual Return</div>
+<button class="select-btn">Select Plan</button>
+</div>
+
+<div class="product-card" onclick="selectProduct(this, 'silver')">
+<div class="product-header">
+<div class="product-name">🌟 Silver Plan</div>
+<div class="product-type">STANDARD</div>
+</div>
+<p class="product-description">Moderate investment with balanced growth and monthly payouts.</p>
+
+<div class="product-details">
+<div class="detail-item">
+<span class="detail-label">Minimum:</span>
+<span class="detail-value">₦10,000</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Duration:</span>
+<span class="detail-value">6 months</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Risk Level:</span>
+<span class="detail-value">Medium</span>
+</div>
+</div>
+
+<div class="product-return">22% Annual Return</div>
+<button class="select-btn">Select Plan</button>
+</div>
+
+<div class="product-card" onclick="selectProduct(this, 'platinum')">
+<div class="product-header">
+<div class="product-name">💎 Platinum Plan</div>
+<div class="product-type">PREMIUM</div>
+</div>
+<p class="product-description">Premium investment for serious investors with maximum returns.</p>
+
+<div class="product-details">
+<div class="detail-item">
+<span class="detail-label">Minimum:</span>
+<span class="detail-value">₦25,000</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Duration:</span>
+<span class="detail-value">3 months</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Risk Level:</span>
+<span class="detail-value">Medium-High</span>
+</div>
+</div>
+
+<div class="product-return">35% Annual Return</div>
+<button class="select-btn">Select Plan</button>
+</div>
+
+<div class="product-card" onclick="selectProduct(this, 'diamond')">
+<div class="product-header">
+<div class="product-name">💰 Diamond Plan</div>
+<div class="product-type">ELITE</div>
+</div>
+<p class="product-description">VIP investment exclusively for high-value investors.</p>
+
+<div class="product-details">
+<div class="detail-item">
+<span class="detail-label">Minimum:</span>
+<span class="detail-value">₦50,000</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Duration:</span>
+<span class="detail-value">Monthly</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Risk Level:</span>
+<span class="detail-value">High</span>
+</div>
+</div>
+
+<div class="product-return">50% Annual Return</div>
+<button class="select-btn">Select Plan</button>
+</div>
+
+<div class="product-card" onclick="selectProduct(this, 'crypto')">
+<div class="product-header">
+<div class="product-name">🚀 Crypto Fund</div>
+<div class="product-type">HIGH-RISK</div>
+</div>
+<p class="product-description">Cryptocurrency investment portfolio for tech-savvy investors.</p>
+
+<div class="product-details">
+<div class="detail-item">
+<span class="detail-label">Minimum:</span>
+<span class="detail-value">₦5,000</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Duration:</span>
+<span class="detail-value">Flexible</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Risk Level:</span>
+<span class="detail-value">Very High</span>
+</div>
+</div>
+
+<div class="product-return">75% Annual Return*</div>
+<button class="select-btn">Select Plan</button>
+</div>
+
+<div class="product-card" onclick="selectProduct(this, 'real-estate')">
+<div class="product-header">
+<div class="product-name">🏠 Real Estate</div>
+<div class="product-type">LONG-TERM</div>
+</div>
+<p class="product-description">Invest in prime real estate with guaranteed rental income.</p>
+
+<div class="product-details">
+<div class="detail-item">
+<span class="detail-label">Minimum:</span>
+<span class="detail-value">₦100,000</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Duration:</span>
+<span class="detail-value">24 months</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Risk Level:</span>
+<span class="detail-value">Low</span>
+</div>
+</div>
+
+<div class="product-return">18% Annual Return</div>
+<button class="select-btn">Select Plan</button>
+</div>
+</div>
+
+</div>
+
+<!-- INVESTMENT FORM -->
+<div class="card">
+<h2>Complete Your Investment</h2>
+
+<div id="noProductSelected" class="no-product-selected">
+👆 Select a product above to start investing
+</div>
+
+<div id="investmentForm" class="investment-form" style="display:none;">
+
+<div class="investment-amount">
+Selected Amount: <span id="selectedAmount">₦0.00</span>
+</div>
+
+<form onsubmit="submitInvestment(event)">
+
+<div class="form-row">
+<div class="form-group">
+<label>Investment Product</label>
+<input type="text" id="productName" readonly>
+</div>
+
+<div class="form-group">
+<label>Minimum Investment Required</label>
+<input type="text" id="minAmount" readonly>
+</div>
+</div>
+
+<div class="form-group">
+<label>Investment Amount (₦)</label>
+<input type="number" id="investmentAmount" placeholder="Enter amount" min="5000" step="500" required>
+<p style="color:#666; font-size:12px; margin-top:5px;" id="minWarning"></p>
+</div>
+
+<div class="form-group">
+<label>Duration</label>
+<input type="text" id="duration" readonly>
+</div>
+
+<div class="form-group">
+<label>Expected Return</label>
+<input type="text" id="expectedReturn" readonly>
+</div>
+
+<div class="form-group">
+<label>Payment Method</label>
+<select id="paymentMethod" required>
+<option value="">-- Select Payment Method --</option>
+<option value="bank-transfer">Bank Transfer</option>
+<option value="wallet">SkyyBund Wallet</option>
+<option value="card">Debit Card</option>
+</select>
+</div>
+
+<div class="summary-box">
+<div class="summary-item">
+<strong>Investment Amount:</strong>
+<span id="summaryAmount">₦0.00</span>
+</div>
+<div class="summary-item">
+<strong>Expected Return (Annually):</strong>
+<span id="summaryReturn">₦0.00</span>
+</div>
+<div class="summary-item">
+<strong>Total Value:</strong>
+<span id="summaryTotal">₦0.00</span>
+</div>
+</div>
+
+<div class="buttons">
+<button type="submit" class="btn-submit">✓ Confirm Investment</button>
+<button type="button" class="btn-reset" onclick="resetForm()">Reset</button>
+</div>
+
+<div id="formLoading" class="loading">Processing investment</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyBuqisoLftS3zK9q4eQL7Of300FkWCwn6w",
+authDomain: "skyybund-5431b.firebaseapp.com",
+projectId: "skyybund-5431b",
+storageBucket: "skyybund-5431b.firebasestorage.app",
+messagingSenderId: "618557553852",
+appId: "1:618557553852:web:6d819ce282a7b875b564b9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const products = {
+gold: {
+name: "🥇 Gold Plan",
+minAmount: 5000,
+duration: "12 months",
+returnRate: 15,
+description: "Precious metals investment"
+},
+silver: {
+name: "🌟 Silver Plan",
+minAmount: 10000,
+duration: "6 months",
+returnRate: 22,
+description: "Balanced growth investment"
+},
+platinum: {
+name: "💎 Platinum Plan",
+minAmount: 25000,
+duration: "3 months",
+returnRate: 35,
+description: "Premium investment"
+},
+diamond: {
+name: "💰 Diamond Plan",
+minAmount: 50000,
+duration: "Monthly",
+returnRate: 50,
+description: "Elite VIP investment"
+},
+crypto: {
+name: "🚀 Crypto Fund",
+minAmount: 5000,
+duration: "Flexible",
+returnRate: 75,
+description: "Cryptocurrency portfolio"
+},
+"real-estate": {
+name: "🏠 Real Estate",
+minAmount: 100000,
+duration: "24 months",
+returnRate: 18,
+description: "Real estate investment"
+}
+};
+
+let currentUser = null;
+let selectedProduct = null;
+
+onAuthStateChanged(auth, (user)=>{
+if(!user){
+window.location.href="login.html";
+return;
+}
+currentUser = user;
+});
+
+window.selectProduct = function(element, productId){
+// Remove selection from all cards
+document.querySelectorAll(".product-card").forEach(card => {
+card.classList.remove("selected");
+});
+
+// Add selection to clicked card
+element.classList.add("selected");
+
+selectedProduct = productId;
+const product = products[productId];
+
+// Update form
+document.getElementById("productName").value = product.name;
+document.getElementById("minAmount").value = "₦" + product.minAmount.toLocaleString();
+document.getElementById("duration").value = product.duration;
+document.getElementById("expectedReturn").value = product.returnRate + "% annually";
+document.getElementById("minWarning").innerText = `Minimum: ₦${product.minAmount.toLocaleString()}`;
+
+document.getElementById("noProductSelected").style.display = "none";
+document.getElementById("investmentForm").style.display = "block";
+
+// Clear amount input
+document.getElementById("investmentAmount").value = "";
+updateSummary();
+};
+
+function updateSummary(){
+const amount = parseFloat(document.getElementById("investmentAmount").value) || 0;
+
+if(!selectedProduct || amount === 0){
+document.getElementById("summaryAmount").innerText = "₦0.00";
+document.getElementById("summaryReturn").innerText = "₦0.00";
+document.getElementById("summaryTotal").innerText = "₦0.00";
+document.getElementById("selectedAmount").innerText = "₦0.00";
+return;
+}
+
+const product = products[selectedProduct];
+const annualReturn = (amount * product.returnRate) / 100;
+const total = amount + annualReturn;
+
+document.getElementById("summaryAmount").innerText = "₦" + amount.toLocaleString("en-NG", {minimumFractionDigits: 2});
+document.getElementById("summaryReturn").innerText = "₦" + annualReturn.toLocaleString("en-NG", {minimumFractionDigits: 2});
+document.getElementById("summaryTotal").innerText = "₦" + total.toLocaleString("en-NG", {minimumFractionDigits: 2});
+document.getElementById("selectedAmount").innerText = "₦" + amount.toLocaleString("en-NG", {minimumFractionDigits: 2});
+}
+
+document.getElementById("investmentAmount").addEventListener("input", updateSummary);
+
+window.resetForm = function(){
+document.querySelectorAll(".product-card").forEach(card => {
+card.classList.remove("selected");
+});
+selectedProduct = null;
+document.getElementById("investmentAmount").value = "";
+document.getElementById("paymentMethod").value = "";
+document.getElementById("noProductSelected").style.display = "block";
+document.getElementById("investmentForm").style.display = "none";
+updateSummary();
+};
+
+window.submitInvestment = async function(e){
+e.preventDefault();
+
+if(!selectedProduct){
+showAlert("Please select a product", "error");
+return;
+}
+
+if(!currentUser){
+showAlert("You must be logged in", "error");
+return;
+}
+
+const amount = parseFloat(document.getElementById("investmentAmount").value);
+const product = products[selectedProduct];
+const paymentMethod = document.getElementById("paymentMethod").value;
+
+if(amount < product.minAmount){
+showAlert(`Minimum investment is ₦${product.minAmount.toLocaleString()}`, "error");
+return;
+}
+
+if(!paymentMethod){
+showAlert("Please select a payment method", "error");
+return;
+}
+
+const btn = document.querySelector(".btn-submit");
+btn.disabled = true;
+document.getElementById("formLoading").style.display = "block";
+
+try {
+await addDoc(collection(db, "investments"), {
+userId: currentUser.uid,
+userEmail: currentUser.email,
+productId: selectedProduct,
+productName: product.name,
+amount: amount,
+returnRate: product.returnRate,
+expectedAnnualReturn: (amount * product.returnRate) / 100,
+duration: product.duration,
+paymentMethod: paymentMethod,
+status: "pending",
+createdAt: serverTimestamp()
+});
+
+showAlert("✅ Investment submitted successfully! Please complete payment to activate.", "success");
+
+setTimeout(()=>{
+window.location.href = "dashboard.html";
+}, 2000);
+
+} catch(error){
+showAlert("❌ Error: " + error.message, "error");
+btn.disabled = false;
+document.getElementById("formLoading").style.display = "none";
+}
+};
+
+function showAlert(message, type){
+const alertMsg = document.getElementById("alertMsg");
+alertMsg.innerText = message;
+alertMsg.className = `alert ${type}`;
+alertMsg.style.display = "block";
+if(type === "success"){
+setTimeout(()=>{
+alertMsg.style.display = "none";
+}, 3000);
+}
+}
+
+document.getElementById("backBtn").addEventListener("click", ()=>{
+window.location.href = "dashboard.html";
+});
+
+</script>
+
+</body>
+</html>
