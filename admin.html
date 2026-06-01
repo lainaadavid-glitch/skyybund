@@ -107,7 +107,8 @@ background:#f9f9f9;
 }
 
 .btn-approve,
-.btn-decline{
+.btn-decline,
+.btn-process{
 padding:6px 12px;
 border:none;
 border-radius:5px;
@@ -146,6 +147,20 @@ opacity:0.5;
 cursor:not-allowed;
 }
 
+.btn-process{
+background:#1971C2;
+color:white;
+}
+
+.btn-process:hover{
+background:#1864AB;
+}
+
+.btn-process:disabled{
+opacity:0.5;
+cursor:not-allowed;
+}
+
 .status{
 padding:5px 10px;
 border-radius:3px;
@@ -166,6 +181,16 @@ color:#2B8A3E;
 .status.declined{
 background:#FFB0B0;
 color:#C1121F;
+}
+
+.status.processing{
+background:#B4D7FF;
+color:#1971C2;
+}
+
+.status.paid{
+background:#A8E6CF;
+color:#00A854;
 }
 
 .no-data{
@@ -252,6 +277,128 @@ display:block;
 font-weight:bold;
 color:#FF6B6B;
 }
+
+/* Modal Styles */
+.modal{
+display:none;
+position:fixed;
+z-index:1000;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background-color:rgba(0,0,0,0.5);
+animation:fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0;}
+to{opacity:1;}
+}
+
+.modal-content{
+background-color:white;
+margin:10% auto;
+padding:30px;
+border-radius:10px;
+width:90%;
+max-width:500px;
+box-shadow:0 4px 20px rgba(0,0,0,0.3);
+animation:slideIn 0.3s ease;
+}
+
+@keyframes slideIn{
+from{
+opacity:0;
+transform:translateY(-50px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.close{
+color:#999;
+float:right;
+font-size:28px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.close:hover{
+color:#000;
+}
+
+.modal-form{
+margin-top:20px;
+}
+
+.form-group{
+margin-bottom:15px;
+}
+
+.form-group label{
+display:block;
+color:#0A2540;
+font-weight:bold;
+margin-bottom:5px;
+}
+
+.form-group input,
+.form-group select{
+width:100%;
+padding:10px;
+border:1px solid #ddd;
+border-radius:5px;
+box-sizing:border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+outline:none;
+border-color:#0A2540;
+box-shadow:0 0 5px rgba(10, 37, 64, 0.2);
+}
+
+.modal-buttons{
+display:flex;
+gap:10px;
+margin-top:20px;
+}
+
+.modal-buttons button{
+flex:1;
+padding:12px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.modal-buttons .btn-cancel{
+background:#999;
+color:white;
+}
+
+.modal-buttons .btn-cancel:hover{
+background:#777;
+}
+
+.modal-buttons .btn-submit{
+background:#1971C2;
+color:white;
+}
+
+.modal-buttons .btn-submit:hover{
+background:#1864AB;
+}
+
+.modal-buttons .btn-submit:disabled{
+opacity:0.5;
+cursor:not-allowed;
+}
 </style>
 </head>
 <body>
@@ -328,6 +475,73 @@ color:#FF6B6B;
 
 </div>
 
+<!-- PAYMENT PROCESSING MODAL -->
+<div id="paymentModal" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closePaymentModal()">&times;</span>
+<h2>Process Payment</h2>
+<p id="paymentInfo" style="margin:15px 0; color:#666;"></p>
+
+<div class="modal-form">
+<div class="form-group">
+<label>Payment Method</label>
+<select id="paymentMethod" onchange="updatePaymentFields()">
+<option value="">-- Select Payment Method --</option>
+<option value="flutterwave">Flutterwave (Automatic)</option>
+<option value="paystack">Paystack (Automatic)</option>
+<option value="manual">Manual Transfer</option>
+</select>
+</div>
+
+<div id="flutterwaveFields" style="display:none;">
+<div class="form-group">
+<label>Recipient Account Number</label>
+<input type="text" id="recipientAccount" placeholder="Account number" readonly>
+</div>
+<div class="form-group">
+<label>Recipient Bank</label>
+<input type="text" id="recipientBank" placeholder="Bank name" readonly>
+</div>
+<div class="form-group">
+<label>Amount (₦)</label>
+<input type="number" id="paymentAmount" placeholder="Amount" readonly>
+</div>
+</div>
+
+<div id="paystackFields" style="display:none;">
+<div class="form-group">
+<label>Recipient Account Number</label>
+<input type="text" id="paystackAccount" placeholder="Account number" readonly>
+</div>
+<div class="form-group">
+<label>Recipient Bank</label>
+<input type="text" id="paystackBank" placeholder="Bank name" readonly>
+</div>
+<div class="form-group">
+<label>Amount (₦)</label>
+<input type="number" id="paystackAmount" placeholder="Amount" readonly>
+</div>
+</div>
+
+<div id="manualFields" style="display:none;">
+<div class="form-group">
+<label>Transaction Reference/Receipt</label>
+<input type="text" id="transactionRef" placeholder="Enter transaction ID or receipt number">
+</div>
+<div class="form-group">
+<label>Notes (Optional)</label>
+<input type="text" id="paymentNotes" placeholder="Any additional notes">
+</div>
+</div>
+</div>
+
+<div class="modal-buttons">
+<button class="btn-cancel" onclick="closePaymentModal()">Cancel</button>
+<button class="btn-submit" id="submitPayment" onclick="submitPayment()">Process Payment</button>
+</div>
+</div>
+</div>
+
 <script type="module">
 
 import { initializeApp }
@@ -362,6 +576,8 @@ const ADMIN_EMAIL = "lainaadavid@gmail.com";
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+let currentPaymentData = null;
 
 onAuthStateChanged(auth, async (user)=>{
 
@@ -407,7 +623,7 @@ try {
 const querySnapshot = await getDocs(collection(db, "withdrawals"));
 let html = "";
 let hasData = false;
-let pending = 0, approved = 0, declined = 0;
+let pending = 0, approved = 0, processing = 0, paid = 0, declined = 0;
 
 querySnapshot.forEach((docSnap)=>{
 hasData = true;
@@ -416,6 +632,8 @@ const status = data.status || "pending";
 
 if(status === "pending") pending++;
 if(status === "approved") approved++;
+if(status === "processing") processing++;
+if(status === "paid") paid++;
 if(status === "declined") declined++;
 
 html += `
@@ -425,9 +643,10 @@ html += `
 <td>${data.bank || "N/A"}</td>
 <td>${data.accountNumber || "N/A"}</td>
 <td><span class="status ${status}">${status.toUpperCase()}</span></td>
-<td style="min-width:120px;">
+<td style="min-width:180px;">
 <button class="btn-approve" onclick="approveWithdrawal('${docSnap.id}', this)" ${status !== "pending" ? "disabled" : ""}>✓ Approve</button>
-<button class="btn-decline" onclick="declineWithdrawal('${docSnap.id}', this)" ${status !== "pending" ? "disabled" : ""}>✕ Decline</button>
+<button class="btn-process" onclick="openPaymentModal('${docSnap.id}', '${data.userEmail}', ${data.amount}, '${data.bank}', '${data.accountNumber}')" ${status !== "approved" ? "disabled" : ""}>💳 Process</button>
+<button class="btn-decline" onclick="declineWithdrawal('${docSnap.id}', this)" ${status === "paid" || status === "declined" ? "disabled" : ""}>✕ Decline</button>
 </td>
 </tr>
 `;
@@ -440,6 +659,8 @@ tbody.innerHTML = html;
 document.getElementById("withdrawStats").innerHTML = `
 <div class="stat-box"><h3>Pending</h3><div class="number">${pending}</div></div>
 <div class="stat-box"><h3>Approved</h3><div class="number">${approved}</div></div>
+<div class="stat-box"><h3>Processing</h3><div class="number">${processing}</div></div>
+<div class="stat-box"><h3>Paid</h3><div class="number">${paid}</div></div>
 <div class="stat-box"><h3>Declined</h3><div class="number">${declined}</div></div>
 `;
 
@@ -521,7 +742,7 @@ window.approveWithdrawal = async function(docId, btn){
 btn.disabled = true;
 try {
 await updateDoc(doc(db, "withdrawals", docId), { status: "approved" });
-showSuccess("✅ Withdrawal approved!");
+showSuccess("✅ Withdrawal approved! Now click 'Process' to send payment.");
 loadWithdrawals();
 } catch(error){
 showError("Error: " + error.message);
@@ -565,6 +786,93 @@ btn.disabled = false;
 }
 };
 
+window.openPaymentModal = function(docId, email, amount, bank, account){
+currentPaymentData = {docId, email, amount, bank, account};
+document.getElementById("paymentInfo").innerHTML = `
+<strong>User:</strong> ${email}<br>
+<strong>Amount:</strong> ₦${parseFloat(amount).toFixed(2)}<br>
+<strong>Bank:</strong> ${bank}<br>
+<strong>Account:</strong> ${account}
+`;
+document.getElementById("recipientAccount").value = account;
+document.getElementById("recipientBank").value = bank;
+document.getElementById("paymentAmount").value = parseFloat(amount).toFixed(2);
+document.getElementById("paystackAccount").value = account;
+document.getElementById("paystackBank").value = bank;
+document.getElementById("paystackAmount").value = parseFloat(amount).toFixed(2);
+document.getElementById("paymentModal").style.display = "block";
+};
+
+window.closePaymentModal = function(){
+document.getElementById("paymentModal").style.display = "none";
+document.getElementById("paymentMethod").value = "";
+document.getElementById("transactionRef").value = "";
+document.getElementById("paymentNotes").value = "";
+updatePaymentFields();
+};
+
+window.updatePaymentFields = function(){
+const method = document.getElementById("paymentMethod").value;
+document.getElementById("flutterwaveFields").style.display = method === "flutterwave" ? "block" : "none";
+document.getElementById("paystackFields").style.display = method === "paystack" ? "block" : "none";
+document.getElementById("manualFields").style.display = method === "manual" ? "block" : "none";
+};
+
+window.submitPayment = async function(){
+const method = document.getElementById("paymentMethod").value;
+
+if(!method){
+showError("Please select a payment method");
+return;
+}
+
+if(!currentPaymentData){
+showError("No payment data selected");
+return;
+}
+
+const btn = document.getElementById("submitPayment");
+btn.disabled = true;
+
+try {
+
+if(method === "flutterwave"){
+// Flutterwave API call
+alert("🔄 Initiating Flutterwave payment...\n\nIn production, this would automatically transfer ₦" + currentPaymentData.amount);
+} else if(method === "paystack"){
+// Paystack API call
+alert("🔄 Initiating Paystack payment...\n\nIn production, this would automatically transfer ₦" + currentPaymentData.amount);
+} else if(method === "manual"){
+const ref = document.getElementById("transactionRef").value;
+if(!ref){
+showError("Please enter transaction reference");
+btn.disabled = false;
+return;
+}
+}
+
+// Update status to processing
+await updateDoc(doc(db, "withdrawals", currentPaymentData.docId), {
+status: "processing",
+paymentMethod: method,
+transactionRef: method === "manual" ? document.getElementById("transactionRef").value : "auto-" + Date.now(),
+paymentNotes: document.getElementById("paymentNotes").value || "",
+processedAt: new Date(),
+processedBy: document.getElementById("adminEmail").innerText
+});
+
+showSuccess("✅ Payment " + (method === "manual" ? "recorded" : "processing") + "! Status updated to 'Processing'.");
+closePaymentModal();
+loadWithdrawals();
+
+} catch(error){
+showError("Error processing payment: " + error.message);
+} finally {
+btn.disabled = false;
+}
+
+};
+
 // Tab switching
 document.querySelectorAll(".tab-btn").forEach(btn => {
 btn.addEventListener("click", ()=>{
@@ -579,6 +887,14 @@ document.getElementById(btn.dataset.tab).classList.add("active");
 document.getElementById("backBtn").addEventListener("click", ()=>{
 window.location.href="dashboard.html";
 });
+
+// Close modal when clicking outside
+window.onclick = function(event){
+const modal = document.getElementById("paymentModal");
+if(event.target == modal){
+modal.style.display = "none";
+}
+};
 
 </script>
 
