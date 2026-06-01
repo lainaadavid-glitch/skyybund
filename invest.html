@@ -166,6 +166,12 @@ font-weight:bold;
 margin-bottom:15px;
 }
 
+.daily-return{
+font-size:12px;
+color:#666;
+margin-top:5px;
+}
+
 .investment-amount{
 font-size:24px;
 color:#FF6B6B;
@@ -373,7 +379,7 @@ padding:20px;
 
 <div class="card">
 <h1>📈 Investment Products</h1>
-<p class="subtitle">Choose an investment product and start growing your wealth. Minimum investment: ₦5,000</p>
+<p class="subtitle">Choose an investment product and earn 5% daily returns for 1 year. Minimum investment: ₦5,000</p>
 
 <div id="alertMsg" class="alert"></div>
 
@@ -384,7 +390,7 @@ padding:20px;
 <div class="product-name">🥇 Gold Plan</div>
 <div class="product-type">POPULAR</div>
 </div>
-<p class="product-description">Secure your investment in precious metals with guaranteed returns.</p>
+<p class="product-description">Secure your investment with consistent daily returns.</p>
 
 <div class="product-details">
 <div class="detail-item">
@@ -393,7 +399,7 @@ padding:20px;
 </div>
 <div class="detail-item">
 <span class="detail-label">Duration:</span>
-<span class="detail-value">12 months</span>
+<span class="detail-value">1 Year (365 days)</span>
 </div>
 <div class="detail-item">
 <span class="detail-label">Risk Level:</span>
@@ -401,7 +407,10 @@ padding:20px;
 </div>
 </div>
 
-<div class="product-return">15% Annual Return</div>
+<div class="product-return">
+5% Daily Return
+<div class="daily-return">📊 365 days = ₦0.00/day</div>
+</div>
 <button class="select-btn">Select Plan</button>
 </div>
 
@@ -410,7 +419,7 @@ padding:20px;
 <div class="product-name">🌟 Silver Plan</div>
 <div class="product-type">STANDARD</div>
 </div>
-<p class="product-description">Moderate investment with balanced growth and monthly payouts.</p>
+<p class="product-description">Moderate investment with consistent daily payouts.</p>
 
 <div class="product-details">
 <div class="detail-item">
@@ -419,15 +428,18 @@ padding:20px;
 </div>
 <div class="detail-item">
 <span class="detail-label">Duration:</span>
-<span class="detail-value">6 months</span>
+<span class="detail-value">1 Year (365 days)</span>
 </div>
 <div class="detail-item">
 <span class="detail-label">Risk Level:</span>
-<span class="detail-value">Medium</span>
+<span class="detail-value">Low</span>
 </div>
 </div>
 
-<div class="product-return">22% Annual Return</div>
+<div class="product-return">
+5% Daily Return
+<div class="daily-return">📊 365 days = ₦0.00/day</div>
+</div>
 <button class="select-btn">Select Plan</button>
 </div>
 
@@ -436,7 +448,7 @@ padding:20px;
 <div class="product-name">💎 Platinum Plan</div>
 <div class="product-type">PREMIUM</div>
 </div>
-<p class="product-description">Premium investment for serious investors with maximum returns.</p>
+<p class="product-description">Premium investment for serious investors.</p>
 
 <div class="product-details">
 <div class="detail-item">
@@ -445,15 +457,18 @@ padding:20px;
 </div>
 <div class="detail-item">
 <span class="detail-label">Duration:</span>
-<span class="detail-value">3 months</span>
+<span class="detail-value">1 Year (365 days)</span>
 </div>
 <div class="detail-item">
 <span class="detail-label">Risk Level:</span>
-<span class="detail-value">Medium-High</span>
+<span class="detail-value">Low</span>
 </div>
 </div>
 
-<div class="product-return">35% Annual Return</div>
+<div class="product-return">
+5% Daily Return
+<div class="daily-return">📊 365 days = ₦0.00/day</div>
+</div>
 <button class="select-btn">Select Plan</button>
 </div>
 
@@ -471,24 +486,27 @@ padding:20px;
 </div>
 <div class="detail-item">
 <span class="detail-label">Duration:</span>
-<span class="detail-value">Monthly</span>
+<span class="detail-value">1 Year (365 days)</span>
 </div>
 <div class="detail-item">
 <span class="detail-label">Risk Level:</span>
-<span class="detail-value">High</span>
+<span class="detail-value">Low</span>
 </div>
 </div>
 
-<div class="product-return">50% Annual Return</div>
+<div class="product-return">
+5% Daily Return
+<div class="daily-return">📊 365 days = ₦0.00/day</div>
+</div>
 <button class="select-btn">Select Plan</button>
 </div>
 
 <div class="product-card" onclick="selectProduct(this, 'crypto')">
 <div class="product-header">
 <div class="product-name">🚀 Crypto Fund</div>
-<div class="product-type">HIGH-RISK</div>
+<div class="product-type">GROWTH</div>
 </div>
-<p class="product-description">Cryptocurrency investment portfolio for tech-savvy investors.</p>
+<p class="product-description">Cryptocurrency investment with daily returns.</p>
 
 <div class="product-details">
 <div class="detail-item">
@@ -497,15 +515,18 @@ padding:20px;
 </div>
 <div class="detail-item">
 <span class="detail-label">Duration:</span>
-<span class="detail-value">Flexible</span>
+<span class="detail-value">1 Year (365 days)</span>
 </div>
 <div class="detail-item">
 <span class="detail-label">Risk Level:</span>
-<span class="detail-value">Very High</span>
+<span class="detail-value">Low</span>
 </div>
 </div>
 
-<div class="product-return">75% Annual Return*</div>
+<div class="product-return">
+5% Daily Return
+<div class="daily-return">📊 365 days = ₦0.00/day</div>
+</div>
 <button class="select-btn">Select Plan</button>
 </div>
 
@@ -514,7 +535,7 @@ padding:20px;
 <div class="product-name">🏠 Real Estate</div>
 <div class="product-type">LONG-TERM</div>
 </div>
-<p class="product-description">Invest in prime real estate with guaranteed rental income.</p>
+<p class="product-description">Real estate investment with daily rental income.</p>
 
 <div class="product-details">
 <div class="detail-item">
@@ -523,7 +544,7 @@ padding:20px;
 </div>
 <div class="detail-item">
 <span class="detail-label">Duration:</span>
-<span class="detail-value">24 months</span>
+<span class="detail-value">1 Year (365 days)</span>
 </div>
 <div class="detail-item">
 <span class="detail-label">Risk Level:</span>
@@ -531,7 +552,10 @@ padding:20px;
 </div>
 </div>
 
-<div class="product-return">18% Annual Return</div>
+<div class="product-return">
+5% Daily Return
+<div class="daily-return">📊 365 days = ₦0.00/day</div>
+</div>
 <button class="select-btn">Select Plan</button>
 </div>
 </div>
@@ -573,13 +597,14 @@ Selected Amount: <span id="selectedAmount">₦0.00</span>
 </div>
 
 <div class="form-group">
-<label>Duration</label>
-<input type="text" id="duration" readonly>
+<label>Daily Return Amount</label>
+<input type="text" id="dailyReturn" readonly placeholder="₦0.00">
+<p style="color:#666; font-size:12px; margin-top:5px;">5% of your investment per day</p>
 </div>
 
 <div class="form-group">
-<label>Expected Return</label>
-<input type="text" id="expectedReturn" readonly>
+<label>Annual Return (365 days)</label>
+<input type="text" id="annualReturn" readonly placeholder="₦0.00">
 </div>
 
 <div class="form-group">
@@ -598,11 +623,15 @@ Selected Amount: <span id="selectedAmount">₦0.00</span>
 <span id="summaryAmount">₦0.00</span>
 </div>
 <div class="summary-item">
-<strong>Expected Return (Annually):</strong>
-<span id="summaryReturn">₦0.00</span>
+<strong>Daily Return (5%):</strong>
+<span id="summaryDaily">₦0.00</span>
 </div>
 <div class="summary-item">
-<strong>Total Value:</strong>
+<strong>Total Annual Return:</strong>
+<span id="summaryAnnual">₦0.00</span>
+</div>
+<div class="summary-item">
+<strong>Total Value After 1 Year:</strong>
 <span id="summaryTotal">₦0.00</span>
 </div>
 </div>
@@ -658,43 +687,43 @@ const products = {
 gold: {
 name: "🥇 Gold Plan",
 minAmount: 5000,
-duration: "12 months",
-returnRate: 15,
+duration: "1 Year (365 days)",
+dailyReturnPercent: 5,
 description: "Precious metals investment"
 },
 silver: {
 name: "🌟 Silver Plan",
 minAmount: 10000,
-duration: "6 months",
-returnRate: 22,
+duration: "1 Year (365 days)",
+dailyReturnPercent: 5,
 description: "Balanced growth investment"
 },
 platinum: {
 name: "💎 Platinum Plan",
 minAmount: 25000,
-duration: "3 months",
-returnRate: 35,
+duration: "1 Year (365 days)",
+dailyReturnPercent: 5,
 description: "Premium investment"
 },
 diamond: {
 name: "💰 Diamond Plan",
 minAmount: 50000,
-duration: "Monthly",
-returnRate: 50,
+duration: "1 Year (365 days)",
+dailyReturnPercent: 5,
 description: "Elite VIP investment"
 },
 crypto: {
 name: "🚀 Crypto Fund",
 minAmount: 5000,
-duration: "Flexible",
-returnRate: 75,
+duration: "1 Year (365 days)",
+dailyReturnPercent: 5,
 description: "Cryptocurrency portfolio"
 },
 "real-estate": {
 name: "🏠 Real Estate",
 minAmount: 100000,
-duration: "24 months",
-returnRate: 18,
+duration: "1 Year (365 days)",
+dailyReturnPercent: 5,
 description: "Real estate investment"
 }
 };
@@ -725,8 +754,6 @@ const product = products[productId];
 // Update form
 document.getElementById("productName").value = product.name;
 document.getElementById("minAmount").value = "₦" + product.minAmount.toLocaleString();
-document.getElementById("duration").value = product.duration;
-document.getElementById("expectedReturn").value = product.returnRate + "% annually";
 document.getElementById("minWarning").innerText = `Minimum: ₦${product.minAmount.toLocaleString()}`;
 
 document.getElementById("noProductSelected").style.display = "none";
@@ -741,20 +768,27 @@ function updateSummary(){
 const amount = parseFloat(document.getElementById("investmentAmount").value) || 0;
 
 if(!selectedProduct || amount === 0){
+document.getElementById("dailyReturn").value = "₦0.00";
+document.getElementById("annualReturn").value = "₦0.00";
 document.getElementById("summaryAmount").innerText = "₦0.00";
-document.getElementById("summaryReturn").innerText = "₦0.00";
+document.getElementById("summaryDaily").innerText = "₦0.00";
+document.getElementById("summaryAnnual").innerText = "₦0.00";
 document.getElementById("summaryTotal").innerText = "₦0.00";
 document.getElementById("selectedAmount").innerText = "₦0.00";
 return;
 }
 
 const product = products[selectedProduct];
-const annualReturn = (amount * product.returnRate) / 100;
-const total = amount + annualReturn;
+const dailyReturn = (amount * product.dailyReturnPercent) / 100;
+const annualReturn = dailyReturn * 365;
+const totalValue = amount + annualReturn;
 
+document.getElementById("dailyReturn").value = "₦" + dailyReturn.toLocaleString("en-NG", {minimumFractionDigits: 2});
+document.getElementById("annualReturn").value = "₦" + annualReturn.toLocaleString("en-NG", {minimumFractionDigits: 2});
 document.getElementById("summaryAmount").innerText = "₦" + amount.toLocaleString("en-NG", {minimumFractionDigits: 2});
-document.getElementById("summaryReturn").innerText = "₦" + annualReturn.toLocaleString("en-NG", {minimumFractionDigits: 2});
-document.getElementById("summaryTotal").innerText = "₦" + total.toLocaleString("en-NG", {minimumFractionDigits: 2});
+document.getElementById("summaryDaily").innerText = "₦" + dailyReturn.toLocaleString("en-NG", {minimumFractionDigits: 2});
+document.getElementById("summaryAnnual").innerText = "₦" + annualReturn.toLocaleString("en-NG", {minimumFractionDigits: 2});
+document.getElementById("summaryTotal").innerText = "₦" + totalValue.toLocaleString("en-NG", {minimumFractionDigits: 2});
 document.getElementById("selectedAmount").innerText = "₦" + amount.toLocaleString("en-NG", {minimumFractionDigits: 2});
 }
 
@@ -804,21 +838,26 @@ btn.disabled = true;
 document.getElementById("formLoading").style.display = "block";
 
 try {
+const dailyReturn = (amount * product.dailyReturnPercent) / 100;
+const annualReturn = dailyReturn * 365;
+
 await addDoc(collection(db, "investments"), {
 userId: currentUser.uid,
 userEmail: currentUser.email,
 productId: selectedProduct,
 productName: product.name,
 amount: amount,
-returnRate: product.returnRate,
-expectedAnnualReturn: (amount * product.returnRate) / 100,
-duration: product.duration,
+dailyReturnPercent: product.dailyReturnPercent,
+dailyReturn: dailyReturn,
+annualReturn: annualReturn,
+totalValue: amount + annualReturn,
+duration: "365 days",
 paymentMethod: paymentMethod,
 status: "pending",
 createdAt: serverTimestamp()
 });
 
-showAlert("✅ Investment submitted successfully! Please complete payment to activate.", "success");
+showAlert("✅ Investment submitted successfully! 5% daily for 365 days. Please complete payment to activate.", "success");
 
 setTimeout(()=>{
 window.location.href = "dashboard.html";
