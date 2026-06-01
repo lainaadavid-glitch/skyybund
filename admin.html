@@ -6,68 +6,205 @@
 <title>SkyyBund Admin Panel</title>
 
 <style>
-body{
-    font-family:Arial,sans-serif;
-    background:#f4f6f9;
-    padding:20px;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
-.header{
-    background:#0A2540;
-    color:white;
-    padding:20px;
-    border-radius:10px;
-    margin-bottom:20px;
+body{
+font-family:Arial,sans-serif;
+background:#f4f6f9;
+padding:20px;
+}
+
+header{
+background:#0A2540;
+color:white;
+padding:20px;
+border-radius:10px;
+margin-bottom:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.header-content h1{
+margin:0;
+}
+
+.back-btn{
+background:#FFD700;
+color:#0A2540;
+border:none;
+padding:10px 20px;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.back-btn:hover{
+background:#FFC700;
+transform:scale(1.05);
 }
 
 .card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    margin-bottom:20px;
-    box-shadow:0 2px 10px rgba(0,0,0,.1);
+background:white;
+padding:20px;
+border-radius:10px;
+margin-bottom:20px;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
 }
 
 table{
-    width:100%;
-    border-collapse:collapse;
+width:100%;
+border-collapse:collapse;
 }
 
 th,td{
-    border:1px solid #ddd;
-    padding:10px;
-    text-align:left;
+border:1px solid #ddd;
+padding:10px;
+text-align:left;
 }
 
 th{
-    background:#0A2540;
-    color:white;
+background:#0A2540;
+color:white;
+}
+
+.btn-approve,
+.btn-deny{
+padding:8px 15px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+margin-right:5px;
+}
+
+.btn-approve{
+background:#51CF66;
+color:white;
+}
+
+.btn-approve:hover{
+background:#40C057;
+}
+
+.btn-deny{
+background:#FF6B6B;
+color:white;
+}
+
+.btn-deny:hover{
+background:#FA5252;
+}
+
+.status{
+padding:5px 10px;
+border-radius:3px;
+font-weight:bold;
+}
+
+.status.pending{
+background:#FFE9AC;
+color:#F76707;
+}
+
+.status.approved{
+background:#C3FAC3;
+color:#2B8A3E;
+}
+
+.status.denied{
+background:#FFB0B0;
+color:#C1121F;
+}
+
+.no-data{
+color:#999;
+font-style:italic;
+text-align:center;
+padding:20px;
+}
+
+.error{
+background:#FFE9E9;
+color:#C1121F;
+padding:15px;
+border-radius:5px;
+margin-bottom:15px;
+display:none;
+border-left:4px solid #C1121F;
+}
+
+.success{
+background:#E9FFE9;
+color:#2B8A3E;
+padding:15px;
+border-radius:5px;
+margin-bottom:15px;
+display:none;
+border-left:4px solid #2B8A3E;
+}
+
+.loading{
+text-align:center;
+padding:20px;
+color:#0A2540;
+}
+
+.loading::after{
+content:" •••";
+animation:dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+0%, 20% { content:" •"; }
+40% { content:" ••"; }
+60% { content:" •••"; }
+100% { content:" "; }
 }
 </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>SkyyBund Admin Panel</h1>
-    <p id="adminEmail">Loading...</p>
+<header>
+<div class="header-content">
+<h1>SkyyBund Admin Panel</h1>
+<p id="adminEmail">Loading...</p>
 </div>
+<button class="back-btn" id="backBtn">← Back to Dashboard</button>
+</header>
+
+<div id="errorMsg" class="error"></div>
+<div id="successMsg" class="success"></div>
 
 <div class="card">
-    <h2>Withdrawal Requests</h2>
+<h2>Withdrawal Requests</h2>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Amount</th>
-                <th>Bank</th>
-                <th>Account Number</th>
-                <th>Account Name</th>
-            </tr>
-        </thead>
+<div id="loadingMsg" class="loading">Loading withdrawals</div>
 
-        <tbody id="withdrawTable">
-        </tbody>
-    </table>
+<table id="withdrawTable" style="display:none;">
+<thead>
+<tr>
+<th>Amount</th>
+<th>Bank</th>
+<th>Account Number</th>
+<th>Account Name</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="withdrawTableBody">
+</tbody>
+</table>
+
+<div id="noData" class="no-data" style="display:none;">No withdrawal requests found</div>
+
 </div>
 
 <script type="module">
@@ -89,12 +226,12 @@ getDocs
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBuqisoLftS3zK9q4eQL7Of300FkWCwn6w",
-  authDomain: "skyybund-5431b.firebaseapp.com",
-  projectId: "skyybund-5431b",
-  storageBucket: "skyybund-5431b.firebasestorage.app",
-  messagingSenderId: "618557553852",
-  appId: "1:618557553852:web:6d819ce282a7b875b564b9"
+apiKey: "AIzaSyBuqisoLftS3zK9q4eQL7Of300FkWCwn6w",
+authDomain: "skyybund-5431b.firebaseapp.com",
+projectId: "skyybund-5431b",
+storageBucket: "skyybund-5431b.firebasestorage.app",
+messagingSenderId: "618557553852",
+appId: "1:618557553852:web:6d819ce282a7b875b564b9"
 };
 
 const ADMIN_EMAIL = "lainaadavid@gmail.com";
@@ -105,49 +242,105 @@ const db = getFirestore(app);
 
 onAuthStateChanged(auth, async (user)=>{
 
-    if(!user){
-        window.location.href="login.html";
-        return;
-    }
+if(!user){
+window.location.href="login.html";
+return;
+}
 
-    if(user.email !== ADMIN_EMAIL){
-        alert("Access Denied");
-        window.location.href="dashboard.html";
-        return;
-    }
+if(user.email !== ADMIN_EMAIL){
+showError("Access Denied: You do not have admin privileges.");
+setTimeout(()=>{
+window.location.href="dashboard.html";
+}, 2000);
+return;
+}
 
-    document.getElementById("adminEmail").innerText =
-    user.email;
-
-    loadWithdrawals();
+document.getElementById("adminEmail").innerText = user.email;
+loadWithdrawals();
 
 });
 
+function showError(message){
+const errorMsg = document.getElementById("errorMsg");
+errorMsg.innerText = message;
+errorMsg.style.display = "block";
+setTimeout(()=>{
+errorMsg.style.display = "none";
+}, 5000);
+}
+
+function showSuccess(message){
+const successMsg = document.getElementById("successMsg");
+successMsg.innerText = message;
+successMsg.style.display = "block";
+setTimeout(()=>{
+successMsg.style.display = "none";
+}, 3000);
+}
+
 async function loadWithdrawals(){
 
-    const querySnapshot =
-    await getDocs(collection(db,"withdrawals"));
+try {
 
-    let html = "";
+const querySnapshot = await getDocs(collection(db,"withdrawals"));
 
-    querySnapshot.forEach((doc)=>{
+let html = "";
+let hasData = false;
 
-        const data = doc.data();
+querySnapshot.forEach((doc)=>{
 
-        html += `
-        <tr>
-            <td>${data.amount || ""}</td>
-            <td>${data.bank || ""}</td>
-            <td>${data.accountNumber || ""}</td>
-            <td>${data.accountName || ""}</td>
-        </tr>
-        `;
+hasData = true;
+const data = doc.data();
+const status = data.status || "pending";
 
-    });
+html += `
+<tr>
+<td>₦${parseFloat(data.amount || 0).toFixed(2)}</td>
+<td>${data.bank || "N/A"}</td>
+<td>${data.accountNumber || "N/A"}</td>
+<td>${data.accountName || "N/A"}</td>
+<td><span class="status ${status}">${status.toUpperCase()}</span></td>
+<td>
+<button class="btn-approve" onclick="approveWithdrawal('${doc.id}')">Approve</button>
+<button class="btn-deny" onclick="denyWithdrawal('${doc.id}')">Deny</button>
+</td>
+</tr>
+`;
 
-    document.getElementById("withdrawTable").innerHTML =
-    html;
+});
+
+const tbody = document.getElementById("withdrawTableBody");
+tbody.innerHTML = html;
+
+document.getElementById("loadingMsg").style.display = "none";
+
+if(hasData){
+document.getElementById("withdrawTable").style.display = "table";
+document.getElementById("noData").style.display = "none";
+} else {
+document.getElementById("withdrawTable").style.display = "none";
+document.getElementById("noData").style.display = "block";
 }
+
+} catch(error){
+showError("Error loading withdrawals: " + error.message);
+document.getElementById("loadingMsg").style.display = "none";
+console.error(error);
+}
+
+}
+
+window.approveWithdrawal = function(docId){
+showSuccess("Withdrawal " + docId + " approved! (Feature coming soon)");
+};
+
+window.denyWithdrawal = function(docId){
+showSuccess("Withdrawal " + docId + " denied! (Feature coming soon)");
+};
+
+document.getElementById("backBtn").addEventListener("click",()=>{
+window.location.href="dashboard.html";
+});
 
 </script>
 
