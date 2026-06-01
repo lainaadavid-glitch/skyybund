@@ -6,77 +6,395 @@
 <title>Deposit - SkyyBund</title>
 
 <style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
 font-family:Arial,sans-serif;
 background:#f4f6f9;
 padding:20px;
 }
 
+header{
+background:#0A2540;
+color:white;
+padding:15px 20px;
+border-radius:10px;
+margin-bottom:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+font-size:24px;
+font-weight:bold;
+color:#FFD700;
+}
+
+.back-btn{
+background:#FFD700;
+color:#0A2540;
+border:none;
+padding:10px 15px;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.back-btn:hover{
+background:#FFC700;
+}
+
 .card{
 background:white;
 max-width:600px;
 margin:auto;
-padding:25px;
+padding:30px;
 border-radius:10px;
-box-shadow:0 2px 10px rgba(0,0,0,0.1);
+box-shadow:0 2px 15px rgba(0,0,0,0.1);
 }
 
 h1{
 color:#0A2540;
+margin-bottom:20px;
 }
 
-.bank{
+.bank-info{
 background:#fff8dc;
-padding:15px;
-border-radius:6px;
-margin:15px 0;
+padding:20px;
+border-radius:8px;
+margin:20px 0;
+border-left:4px solid #FFD700;
 }
 
-a{
-display:inline-block;
-margin-top:20px;
-text-decoration:none;
-background:#0A2540;
-color:white;
-padding:10px 20px;
+.bank-info p{
+margin:12px 0;
+line-height:1.8;
+}
+
+.bank-info b{
+color:#0A2540;
+font-weight:bold;
+}
+
+.section{
+margin:25px 0;
+}
+
+.section-title{
+color:#0A2540;
+font-weight:bold;
+margin-bottom:10px;
+font-size:16px;
+}
+
+.deposit-form{
+background:#f9f9f9;
+padding:20px;
+border-radius:8px;
+margin-top:15px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border:1px solid #ddd;
 border-radius:5px;
+box-sizing:border-box;
+font-size:14px;
+}
+
+input:focus{
+outline:none;
+border-color:#0A2540;
+box-shadow:0 0 5px rgba(10, 37, 64, 0.2);
+}
+
+.btn-group{
+display:flex;
+gap:10px;
+margin-top:20px;
+}
+
+button{
+flex:1;
+padding:12px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+font-size:14px;
+transition:0.3s;
+}
+
+.btn-deposit{
+background:#51CF66;
+color:white;
+}
+
+.btn-deposit:hover{
+background:#40C057;
+transform:translateY(-2px);
+}
+
+.btn-deposit:disabled{
+opacity:0.5;
+cursor:not-allowed;
+}
+
+.btn-back{
+background:#999;
+color:white;
+}
+
+.btn-back:hover{
+background:#777;
+}
+
+.alert{
+padding:15px;
+border-radius:5px;
+margin-bottom:15px;
+display:none;
+animation:slideDown 0.3s ease;
+}
+
+.alert.error{
+background:#FFE9E9;
+color:#C1121F;
+border-left:4px solid #C1121F;
+}
+
+.alert.success{
+background:#E9FFE9;
+color:#2B8A3E;
+border-left:4px solid #2B8A3E;
+}
+
+@keyframes slideDown{
+from{
+opacity:0;
+transform:translateY(-10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.loading{
+display:none;
+text-align:center;
+color:#0A2540;
+}
+
+.loading::after{
+content:" •••";
+animation:dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+0%, 20% { content:" •"; }
+40% { content:" ••"; }
+60% { content:" •••"; }
+100% { content:" "; }
+}
+
+.instructions{
+background:#E7F5FF;
+padding:15px;
+border-radius:8px;
+margin:15px 0;
+border-left:4px solid #0A2540;
+}
+
+.instructions ol{
+margin-left:20px;
+line-height:1.8;
+}
+
+.instructions li{
+margin:8px 0;
 }
 </style>
 </head>
 
 <body>
 
+<header>
+<div class="logo">SkyyBund</div>
+<button class="back-btn" id="backBtn">← Dashboard</button>
+</header>
+
 <div class="card">
 
-<h1>Deposit Funds</h1>
+<h1>💰 Deposit Funds</h1>
 
-<p>Contact admin for payment instructions.</p>
+<div id="alert" class="alert"></div>
 
-<div class="bank">
-<b>Bank Name:</b> Update Later<br><br>
+<div class="section">
+<div class="section-title">Step 1: Bank Transfer Details</div>
+<p>Send money to the account below:</p>
 
-<b>Account Name:</b> SkyyBund<br><br>
-
-<b>Account Number:</b> Update Later
+<div class="bank-info">
+<p><b>Bank Name:</b> GTBank / First Bank</p>
+<p><b>Account Name:</b> SkyyBund Investment</p>
+<p><b>Account Number:</b> 1234567890</p>
+<p style="color:#999; font-size:12px; margin-top:10px;">⚠️ Copy the account number correctly before transferring</p>
+</div>
 </div>
 
-<p>
-After making payment, contact support:
-</p>
+<div class="section">
+<div class="section-title">Step 2: Deposit Amount</div>
+<p>Enter the amount you want to deposit:</p>
 
-<p>
-Email: lainaadavid@gmail.com
-</p>
+<div class="deposit-form">
+<input type="number" id="depositAmount" placeholder="Enter amount (₦)" min="100" step="100">
+<p style="color:#666; font-size:12px; margin-top:8px;">Minimum: ₦100</p>
+</div>
+</div>
 
-<p>
-WhatsApp: 08145426048
-</p>
+<div class="section">
+<div class="section-title">Step 3: Confirm Deposit</div>
 
-<a href="dashboard.html">
-Back to Dashboard
-</a>
+<div class="instructions">
+<ol>
+<li>Copy the account number above</li>
+<li>Transfer the amount from your bank</li>
+<li>Enter amount here and click "Confirm Deposit"</li>
+<li>Admin will verify and credit your account</li>
+</ol>
+</div>
+
+<div class="btn-group">
+<button class="btn-back" id="backBtn2">← Back</button>
+<button class="btn-deposit" id="depositBtn">✓ Confirm Deposit</button>
+</div>
+
+<div id="loading" class="loading">Processing</div>
 
 </div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyBuqisoLftS3zK9q4eQL7Of300FkWCwn6w",
+authDomain: "skyybund-5431b.firebaseapp.com",
+projectId: "skyybund-5431b",
+storageBucket: "skyybund-5431b.firebasestorage.app",
+messagingSenderId: "618557553852",
+appId: "1:618557553852:web:6d819ce282a7b875b564b9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+
+onAuthStateChanged(auth, (user)=>{
+if(!user){
+window.location.href="login.html";
+return;
+}
+currentUser = user;
+});
+
+function showAlert(message, type){
+const alert = document.getElementById("alert");
+alert.innerText = message;
+alert.className = `alert ${type}`;
+alert.style.display = "block";
+if(type === "success"){
+setTimeout(()=>{
+alert.style.display = "none";
+}, 3000);
+}
+}
+
+document.getElementById("depositBtn").addEventListener("click", async ()=>{
+
+const amount = parseFloat(document.getElementById("depositAmount").value);
+
+if(!amount || amount < 100){
+showAlert("⚠️ Enter amount of at least ₦100", "error");
+return;
+}
+
+if(!currentUser){
+showAlert("❌ You must be logged in", "error");
+return;
+}
+
+const btn = document.getElementById("depositBtn");
+const loading = document.getElementById("loading");
+
+btn.disabled = true;
+loading.style.display = "block";
+
+try{
+
+await addDoc(
+collection(db, "deposits"),
+{
+userId: currentUser.uid,
+userEmail: currentUser.email,
+amount: amount,
+status: "pending",
+createdAt: serverTimestamp()
+}
+);
+
+showAlert("✅ Deposit request submitted! Admin will verify and credit your account shortly.", "success");
+
+document.getElementById("depositAmount").value = "";
+
+setTimeout(()=>{
+window.location.href = "dashboard.html";
+}, 2000);
+
+} catch(error){
+showAlert("❌ Error: " + error.message, "error");
+} finally {
+btn.disabled = false;
+loading.style.display = "none";
+}
+
+});
+
+document.getElementById("backBtn").addEventListener("click", ()=>{
+window.location.href = "dashboard.html";
+});
+
+document.getElementById("backBtn2").addEventListener("click", ()=>{
+window.location.href = "dashboard.html";
+});
+
+</script>
 
 </body>
 </html>
