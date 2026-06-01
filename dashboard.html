@@ -40,6 +40,12 @@ padding:10px 20px;
 border-radius:5px;
 cursor:pointer;
 font-weight:bold;
+transition:0.3s;
+}
+
+.logout:hover{
+background:#FFC700;
+transform:scale(1.05);
 }
 
 .container{
@@ -73,10 +79,32 @@ padding:12px 20px;
 border-radius:5px;
 text-decoration:none;
 font-weight:bold;
+border:none;
+cursor:pointer;
+transition:0.3s;
+display:inline-block;
 }
 
 .btn:hover{
-opacity:0.9;
+opacity:0.85;
+transform:translateY(-2px);
+}
+
+.btn:disabled{
+opacity:0.5;
+cursor:not-allowed;
+}
+
+.btn.admin{
+background:#FF6B6B;
+}
+
+.btn.admin:hover:not(:disabled){
+background:#EE5A52;
+}
+
+.hidden{
+display:none;
 }
 
 table{
@@ -93,6 +121,11 @@ padding:10px;
 table th{
 background:#0A2540;
 color:white;
+}
+
+.loading{
+opacity:0.6;
+pointer-events:none;
 }
 </style>
 </head>
@@ -132,7 +165,7 @@ Deposit
 Withdraw
 </a>
 
-<a href="admin.html" class="btn">
+<a href="admin.html" class="btn admin" id="adminBtn">
 Admin Panel
 </a>
 
@@ -191,15 +224,25 @@ messagingSenderId: "618557553852",
 appId: "1:618557553852:web:6d819ce282a7b875b564b9"
 };
 
+const ADMIN_EMAIL = "lainaadavid@gmail.com";
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 onAuthStateChanged(auth,(user)=>{
 
 if(user){
-document.getElementById("userEmail").innerText =
-user.email;
-}else{
+document.getElementById("userEmail").innerText = user.email;
+
+// Show admin button only for admin
+const adminBtn = document.getElementById("adminBtn");
+if(user.email === ADMIN_EMAIL){
+adminBtn.classList.remove("hidden");
+} else {
+adminBtn.classList.add("hidden");
+}
+
+} else {
 window.location.href="login.html";
 }
 
@@ -208,9 +251,18 @@ window.location.href="login.html";
 document.getElementById("logoutBtn")
 .addEventListener("click",()=>{
 
+const logoutBtn = document.getElementById("logoutBtn");
+logoutBtn.disabled = true;
+logoutBtn.innerText = "Logging out...";
+
 signOut(auth)
 .then(()=>{
 window.location.href="login.html";
+})
+.catch(error=>{
+alert("Logout failed: " + error.message);
+logoutBtn.disabled = false;
+logoutBtn.innerText = "Logout";
 });
 
 });
