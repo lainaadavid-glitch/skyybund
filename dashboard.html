@@ -7,99 +7,92 @@
 
 <style>
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
 
 body{
-    background:#f4f6f9;
+background:#f4f6f9;
 }
 
 header{
-    background:#0A2540;
-    color:white;
-    padding:20px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+background:#0A2540;
+color:white;
+padding:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
 .logo{
-    color:#FFD700;
-    font-size:28px;
-    font-weight:bold;
+font-size:28px;
+font-weight:bold;
+color:#FFD700;
 }
 
 .logout{
-    background:#FFD700;
-    color:#0A2540;
-    border:none;
-    padding:10px 20px;
-    border-radius:6px;
-    cursor:pointer;
-    font-weight:bold;
+background:#FFD700;
+color:#0A2540;
+border:none;
+padding:10px 20px;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
 }
 
 .container{
-    padding:25px;
+padding:25px;
 }
 
 .card{
-    background:white;
-    padding:20px;
-    border-radius:12px;
-    margin-bottom:20px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+background:white;
+padding:20px;
+border-radius:10px;
+margin-bottom:20px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
 }
 
 .balance{
-    font-size:35px;
-    font-weight:bold;
-    color:#0A2540;
+font-size:32px;
+font-weight:bold;
+color:#0A2540;
 }
 
 .actions{
-    display:flex;
-    gap:15px;
-    flex-wrap:wrap;
+display:flex;
+flex-wrap:wrap;
+gap:15px;
 }
 
 .btn{
-    background:#0A2540;
-    color:white;
-    padding:12px 20px;
-    border-radius:6px;
-    text-decoration:none;
-    font-weight:bold;
+background:#0A2540;
+color:white;
+padding:12px 20px;
+border-radius:5px;
+text-decoration:none;
+font-weight:bold;
 }
 
 .btn:hover{
-    opacity:0.9;
+opacity:0.9;
 }
 
 table{
-    width:100%;
-    border-collapse:collapse;
+width:100%;
+border-collapse:collapse;
 }
 
 table th,
 table td{
-    border:1px solid #ddd;
-    padding:12px;
-    text-align:left;
+border:1px solid #ddd;
+padding:10px;
 }
 
 table th{
-    background:#0A2540;
-    color:white;
-}
-
-.notice{
-    background:#fff8dc;
-    border-left:5px solid #FFD700;
-    padding:15px;
+background:#0A2540;
+color:white;
 }
 </style>
 </head>
@@ -107,76 +100,73 @@ table th{
 <body>
 
 <header>
-    <div class="logo">SkyyBund</div>
+<div class="logo">SkyyBund</div>
 
-    <button class="logout" id="logoutBtn">
-        Logout
-    </button>
+<button class="logout" id="logoutBtn">
+Logout
+</button>
 </header>
 
 <div class="container">
 
-    <div class="card">
-        <h2>Welcome</h2>
-        <p id="userEmail">Loading...</p>
-    </div>
+<div class="card">
+<h2>Welcome</h2>
+<p id="userEmail">Loading...</p>
+</div>
 
-    <div class="card">
-        <h3>Account Balance</h3>
-        <div class="balance">₦0.00</div>
-    </div>
+<div class="card">
+<h3>Account Balance</h3>
+<div class="balance">₦0.00</div>
+</div>
 
-    <div class="card notice">
-        Welcome to your SkyyBund dashboard.
-    </div>
+<div class="card">
+<h3>Quick Actions</h3>
 
-    <div class="card">
-        <h3>Quick Actions</h3>
+<div class="actions">
 
-        <div class="actions">
+<a href="deposit.html" class="btn">
+Deposit
+</a>
 
-            <a href="deposit.html" class="btn">
-                Deposit
-            </a>
+<a href="withdraw.html" class="btn">
+Withdraw
+</a>
 
-            <a href="withdraw.html" class="btn">
-                Withdraw
-            </a>
+<a href="admin.html" class="btn">
+Admin Panel
+</a>
 
-            <a href="profile.html" class="btn">
-                Profile
-            </a>
+<a href="https://wa.me/2348145426048"
+target="_blank"
+class="btn">
+Customer Care
+</a>
 
-            <a href="https://wa.me/2348145426048"
-               target="_blank"
-               class="btn">
-               Customer Care
-            </a>
+</div>
 
-        </div>
-    </div>
+</div>
 
-    <div class="card">
-        <h3>Recent Transactions</h3>
+<div class="card">
 
-        <table>
+<h3>Recent Activity</h3>
 
-            <tr>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Status</th>
-            </tr>
+<table>
 
-            <tr>
-                <td>No transactions yet</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
+<tr>
+<th>Date</th>
+<th>Description</th>
+<th>Status</th>
+</tr>
 
-        </table>
-    </div>
+<tr>
+<td>No records</td>
+<td>-</td>
+<td>-</td>
+</tr>
+
+</table>
+
+</div>
 
 </div>
 
@@ -193,12 +183,12 @@ signOut
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBuqisoLftS3zK9q4eQL7Of300FkWCwn6w",
-  authDomain: "skyybund-5431b.firebaseapp.com",
-  projectId: "skyybund-5431b",
-  storageBucket: "skyybund-5431b.firebasestorage.app",
-  messagingSenderId: "618557553852",
-  appId: "1:618557553852:web:6d819ce282a7b875b564b9"
+apiKey: "AIzaSyBuqisoLftS3zK9q4eQL7Of300FkWCwn6w",
+authDomain: "skyybund-5431b.firebaseapp.com",
+projectId: "skyybund-5431b",
+storageBucket: "skyybund-5431b.firebasestorage.app",
+messagingSenderId: "618557553852",
+appId: "1:618557553852:web:6d819ce282a7b875b564b9"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -206,22 +196,22 @@ const auth = getAuth(app);
 
 onAuthStateChanged(auth,(user)=>{
 
-    if(user){
-        document.getElementById("userEmail").innerText =
-        user.email;
-    }else{
-        window.location.href="login.html";
-    }
+if(user){
+document.getElementById("userEmail").innerText =
+user.email;
+}else{
+window.location.href="login.html";
+}
 
 });
 
 document.getElementById("logoutBtn")
 .addEventListener("click",()=>{
 
-    signOut(auth)
-    .then(()=>{
-        window.location.href="login.html";
-    });
+signOut(auth)
+.then(()=>{
+window.location.href="login.html";
+});
 
 });
 
