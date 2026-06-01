@@ -14,7 +14,7 @@
 }
 
 body{
-    background:#f5f5f5;
+    background:#f4f6f9;
 }
 
 header{
@@ -28,7 +28,7 @@ header{
 
 .logo{
     color:#FFD700;
-    font-size:24px;
+    font-size:28px;
     font-weight:bold;
 }
 
@@ -37,25 +37,25 @@ header{
     color:#0A2540;
     border:none;
     padding:10px 20px;
-    border-radius:5px;
+    border-radius:6px;
     cursor:pointer;
     font-weight:bold;
 }
 
 .container{
-    padding:30px;
+    padding:25px;
 }
 
 .card{
     background:white;
-    padding:25px;
-    border-radius:10px;
-    box-shadow:0 2px 10px rgba(0,0,0,.1);
+    padding:20px;
+    border-radius:12px;
     margin-bottom:20px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
 }
 
 .balance{
-    font-size:32px;
+    font-size:35px;
     font-weight:bold;
     color:#0A2540;
 }
@@ -70,10 +70,13 @@ header{
     background:#0A2540;
     color:white;
     padding:12px 20px;
-    border:none;
-    border-radius:5px;
-    cursor:pointer;
+    border-radius:6px;
     text-decoration:none;
+    font-weight:bold;
+}
+
+.btn:hover{
+    opacity:0.9;
 }
 
 table{
@@ -84,8 +87,19 @@ table{
 table th,
 table td{
     border:1px solid #ddd;
-    padding:10px;
+    padding:12px;
     text-align:left;
+}
+
+table th{
+    background:#0A2540;
+    color:white;
+}
+
+.notice{
+    background:#fff8dc;
+    border-left:5px solid #FFD700;
+    padding:15px;
 }
 </style>
 </head>
@@ -112,15 +126,33 @@ table td{
         <div class="balance">₦0.00</div>
     </div>
 
+    <div class="card notice">
+        Welcome to your SkyyBund dashboard.
+    </div>
+
     <div class="card">
         <h3>Quick Actions</h3>
 
         <div class="actions">
-            <a href="#" class="btn">Deposit</a>
-            <a href="#" class="btn">Withdraw</a>
-            <a href="https://wa.me/2348145426048" class="btn">
-                Customer Care
+
+            <a href="deposit.html" class="btn">
+                Deposit
             </a>
+
+            <a href="withdraw.html" class="btn">
+                Withdraw
+            </a>
+
+            <a href="profile.html" class="btn">
+                Profile
+            </a>
+
+            <a href="https://wa.me/2348145426048"
+               target="_blank"
+               class="btn">
+               Customer Care
+            </a>
+
         </div>
     </div>
 
@@ -128,6 +160,7 @@ table td{
         <h3>Recent Transactions</h3>
 
         <table>
+
             <tr>
                 <th>Date</th>
                 <th>Type</th>
@@ -136,11 +169,12 @@ table td{
             </tr>
 
             <tr>
-                <td>No records</td>
+                <td>No transactions yet</td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
             </tr>
+
         </table>
     </div>
 
@@ -172,21 +206,22 @@ const auth = getAuth(app);
 
 onAuthStateChanged(auth,(user)=>{
 
-if(user){
-document.getElementById("userEmail").innerText =
-user.email;
-}else{
-window.location.href="login.html";
-}
+    if(user){
+        document.getElementById("userEmail").innerText =
+        user.email;
+    }else{
+        window.location.href="login.html";
+    }
 
 });
 
 document.getElementById("logoutBtn")
 .addEventListener("click",()=>{
 
-signOut(auth).then(()=>{
-window.location.href="login.html";
-});
+    signOut(auth)
+    .then(()=>{
+        window.location.href="login.html";
+    });
 
 });
 
