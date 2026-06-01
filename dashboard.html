@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkyyBund Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f5f5;
+}
+
+header{
+    background:#0A2540;
+    color:white;
+    padding:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    color:#FFD700;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.logout{
+    background:#FFD700;
+    color:#0A2540;
+    border:none;
+    padding:10px 20px;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.container{
+    padding:30px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+    margin-bottom:20px;
+}
+
+.balance{
+    font-size:32px;
+    font-weight:bold;
+    color:#0A2540;
+}
+
+.actions{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    background:#0A2540;
+    color:white;
+    padding:12px 20px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    text-decoration:none;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th,
+table td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:left;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">SkyyBund</div>
+
+    <button class="logout" id="logoutBtn">
+        Logout
+    </button>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Welcome</h2>
+        <p id="userEmail">Loading...</p>
+    </div>
+
+    <div class="card">
+        <h3>Account Balance</h3>
+        <div class="balance">₦0.00</div>
+    </div>
+
+    <div class="card">
+        <h3>Quick Actions</h3>
+
+        <div class="actions">
+            <a href="#" class="btn">Deposit</a>
+            <a href="#" class="btn">Withdraw</a>
+            <a href="https://wa.me/2348145426048" class="btn">
+                Customer Care
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Recent Transactions</h3>
+
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+            </tr>
+
+            <tr>
+                <td>No records</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+getAuth,
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBuqisoLftS3zK9q4eQL7Of300FkWCwn6w",
+  authDomain: "skyybund-5431b.firebaseapp.com",
+  projectId: "skyybund-5431b",
+  storageBucket: "skyybund-5431b.firebasestorage.app",
+  messagingSenderId: "618557553852",
+  appId: "1:618557553852:web:6d819ce282a7b875b564b9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+document.getElementById("userEmail").innerText =
+user.email;
+}else{
+window.location.href="login.html";
+}
+
+});
+
+document.getElementById("logoutBtn")
+.addEventListener("click",()=>{
+
+signOut(auth).then(()=>{
+window.location.href="login.html";
+});
+
+});
+
+</script>
+
+</body>
+</html>
