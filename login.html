@@ -1,1 +1,112 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - SkyyBund</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#0A2540;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.box{
+background:white;
+padding:30px;
+border-radius:10px;
+width:350px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#FFD700;
+border:none;
+cursor:pointer;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>Login</h2>
+
+<input type="email" id="email" placeholder="Email">
+
+<input type="password" id="password" placeholder="Password">
+
+<button id="loginBtn">
+Login
+</button>
+
+<p>
+<a href="register.html">
+Create Account
+</a>
+</p>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+getAuth,
+signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyBuqisoLftS3zK9q4eQL7Of300FkWCwn6w",
+authDomain: "skyybund-5431b.firebaseapp.com",
+projectId: "skyybund-5431b",
+storageBucket: "skyybund-5431b.firebasestorage.app",
+messagingSenderId: "618557553852",
+appId: "1:618557553852:web:6d819ce282a7b875b564b9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+document.getElementById("loginBtn")
+.addEventListener("click",()=>{
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+signInWithEmailAndPassword(auth,email,password)
+.then(()=>{
+window.location.href="dashboard.html";
+})
+.catch(error=>{
+alert(error.message);
+});
+
+});
+
+</script>
+
+</body>
+</html>
