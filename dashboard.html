@@ -103,6 +103,14 @@ background:#FF6B6B;
 background:#EE5A52;
 }
 
+.btn.invest{
+background:#51CF66;
+}
+
+.btn.invest:hover:not(:disabled){
+background:#40C057;
+}
+
 .hidden{
 display:none;
 }
@@ -116,11 +124,17 @@ table th,
 table td{
 border:1px solid #ddd;
 padding:10px;
+text-align:left;
+font-size:13px;
 }
 
 table th{
 background:#0A2540;
 color:white;
+}
+
+table tr:hover{
+background:#f9f9f9;
 }
 
 .loading{
@@ -209,6 +223,44 @@ margin-bottom:8px;
 margin:5px 0;
 font-size:14px;
 }
+
+.investment-badge{
+background:#A8E6CF;
+color:#00A854;
+padding:5px 10px;
+border-radius:3px;
+font-size:12px;
+font-weight:bold;
+}
+
+.status-badge{
+font-weight:bold;
+padding:5px 10px;
+border-radius:3px;
+font-size:12px;
+}
+
+.status-pending{
+background:#FFE9AC;
+color:#F76707;
+}
+
+.status-approved{
+background:#C3FAC3;
+color:#2B8A3E;
+}
+
+.status-paid{
+background:#A8E6CF;
+color:#00A854;
+}
+
+.no-records{
+color:#999;
+text-align:center;
+padding:20px;
+font-style:italic;
+}
 </style>
 </head>
 
@@ -273,7 +325,7 @@ Generating your account details...
 </div>
 
 <div class="card">
-<h3>Account Balance</h3>
+<h3>💰 Account Balance</h3>
 <div class="balance" id="balanceDisplay">₦0.00</div>
 </div>
 
@@ -283,21 +335,25 @@ Generating your account details...
 <div class="actions">
 
 <a href="deposit.html" class="btn">
-Deposit
+💵 Deposit
 </a>
 
 <a href="withdraw.html" class="btn">
-Withdraw
+💸 Withdraw
+</a>
+
+<a href="invest.html" class="btn invest">
+💼 Invest Now
 </a>
 
 <a href="admin.html" class="btn admin" id="adminBtn">
-Admin Panel
+🔐 Admin Panel
 </a>
 
 <a href="https://wa.me/2348145426048"
 target="_blank"
 class="btn">
-Customer Care
+💬 Customer Care
 </a>
 
 </div>
@@ -305,8 +361,31 @@ Customer Care
 </div>
 
 <div class="card">
+<h3>📈 Active Investments</h3>
 
-<h3>Recent Activity</h3>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Product</th>
+<th>Amount</th>
+<th>Daily Return</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="investmentTable">
+<tr>
+<td colspan="5" class="no-records">No active investments yet. Start investing now!</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+<div class="card">
+
+<h3>📊 Recent Activity</h3>
 
 <table>
 
@@ -372,7 +451,6 @@ let currentUserId = null;
 
 // Generate unique account number for user
 function generateAccountNumber(userId){
-// Create a unique 10-digit account number based on user ID
 const hash = userId.split("").reduce((a, b) => {
 a = ((a << 5) - a) + b.charCodeAt(0);
 return a & a;
@@ -407,12 +485,51 @@ adminBtn.classList.add("hidden");
 
 // Load user transactions
 loadTransactions(user.uid);
+loadInvestments(user.uid);
 
 } else {
 window.location.href="login.html";
 }
 
 });
+
+async function loadInvestments(userId){
+try {
+const investmentsSnapshot = await getDocs(
+query(collection(db, "investments"), where("userId", "==", userId))
+);
+
+const tbody = document.getElementById("investmentTable");
+let hasInvestments = false;
+
+let html = "";
+investmentsSnapshot.forEach(doc => {
+hasInvestments = true;
+const data = doc.data();
+const date = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : "N/A";
+const statusClass = data.status === "approved" ? "status-approved" : data.status === "pending" ? "status-pending" : "status-paid";
+
+html += `
+<tr>
+<td>${date}</td>
+<td>${data.productName || "N/A"}</td>
+<td><strong>₦${parseFloat(data.amount).toLocaleString("en-NG", {minimumFractionDigits: 2})}</strong></td>
+<td><span class="investment-badge">₦${parseFloat(data.dailyReturn).toLocaleString("en-NG", {minimumFractionDigits: 2})}/day</span></td>
+<td><span class="status-badge ${statusClass}">${(data.status || "pending").toUpperCase()}</span></td>
+</tr>
+`;
+});
+
+if(hasInvestments){
+tbody.innerHTML = html;
+} else {
+tbody.innerHTML = `<tr><td colspan="5" class="no-records">No active investments yet. Start investing now!</td></tr>`;
+}
+
+} catch(error){
+console.error("Error loading investments:", error);
+}
+}
 
 async function loadTransactions(userId){
 try {
@@ -461,12 +578,12 @@ return;
 let html = "";
 transactions.slice(0, 10).forEach(t => {
 const dateStr = t.date.toLocaleDateString();
-const statusColor = t.status === "approved" ? "green" : t.status === "declined" ? "red" : "orange";
+const statusColor = t.status === "approved" ? "green" : t.status === "paid" ? "green" : t.status === "declined" ? "red" : "orange";
 html += `
 <tr>
 <td>${dateStr}</td>
 <td>${t.type}</td>
-<td>₦${parseFloat(t.amount).toFixed(2)}</td>
+<td>₦${parseFloat(t.amount).toLocaleString("en-NG", {minimumFractionDigits: 2})}</td>
 <td><span style="color:${statusColor}; font-weight:bold;">${t.status.toUpperCase()}</span></td>
 </tr>
 `;
