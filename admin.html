@@ -49,6 +49,32 @@ background:#FFC700;
 transform:scale(1.05);
 }
 
+.tabs{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+.tab-btn{
+padding:12px 20px;
+border:none;
+border-radius:5px;
+background:#ddd;
+color:#0A2540;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+.tab-btn.active{
+background:#0A2540;
+color:#FFD700;
+}
+
+.tab-btn:hover{
+background:#999;
+}
+
 .card{
 background:white;
 padding:20px;
@@ -60,28 +86,36 @@ box-shadow:0 2px 10px rgba(0,0,0,.1);
 table{
 width:100%;
 border-collapse:collapse;
+margin-top:15px;
 }
 
 th,td{
 border:1px solid #ddd;
 padding:10px;
 text-align:left;
+font-size:13px;
 }
 
 th{
 background:#0A2540;
 color:white;
+font-weight:bold;
+}
+
+tr:hover{
+background:#f9f9f9;
 }
 
 .btn-approve,
-.btn-deny{
-padding:8px 15px;
+.btn-decline{
+padding:6px 12px;
 border:none;
 border-radius:5px;
 cursor:pointer;
 font-weight:bold;
 transition:0.3s;
 margin-right:5px;
+font-size:12px;
 }
 
 .btn-approve{
@@ -93,19 +127,30 @@ color:white;
 background:#40C057;
 }
 
-.btn-deny{
+.btn-approve:disabled{
+opacity:0.5;
+cursor:not-allowed;
+}
+
+.btn-decline{
 background:#FF6B6B;
 color:white;
 }
 
-.btn-deny:hover{
+.btn-decline:hover{
 background:#FA5252;
+}
+
+.btn-decline:disabled{
+opacity:0.5;
+cursor:not-allowed;
 }
 
 .status{
 padding:5px 10px;
 border-radius:3px;
 font-weight:bold;
+font-size:12px;
 }
 
 .status.pending{
@@ -118,7 +163,7 @@ background:#C3FAC3;
 color:#2B8A3E;
 }
 
-.status.denied{
+.status.declined{
 background:#FFB0B0;
 color:#C1121F;
 }
@@ -127,7 +172,7 @@ color:#C1121F;
 color:#999;
 font-style:italic;
 text-align:center;
-padding:20px;
+padding:30px;
 }
 
 .error{
@@ -167,33 +212,82 @@ animation:dots 1.5s steps(4, end) infinite;
 60% { content:" •••"; }
 100% { content:" "; }
 }
+
+.stats{
+display:flex;
+gap:15px;
+margin-bottom:20px;
+flex-wrap:wrap;
+}
+
+.stat-box{
+background:#E7F5FF;
+padding:15px 20px;
+border-radius:8px;
+border-left:4px solid #0A2540;
+flex:1;
+min-width:150px;
+}
+
+.stat-box h3{
+color:#0A2540;
+font-size:12px;
+}
+
+.stat-box .number{
+color:#0A2540;
+font-size:24px;
+font-weight:bold;
+}
+
+.tab-content{
+display:none;
+}
+
+.tab-content.active{
+display:block;
+}
+
+.amount{
+font-weight:bold;
+color:#FF6B6B;
+}
 </style>
 </head>
 <body>
 
 <header>
 <div class="header-content">
-<h1>SkyyBund Admin Panel</h1>
+<h1>🔐 SkyyBund Admin Panel</h1>
 <p id="adminEmail">Loading...</p>
 </div>
-<button class="back-btn" id="backBtn">← Back to Dashboard</button>
+<button class="back-btn" id="backBtn">← Dashboard</button>
 </header>
 
 <div id="errorMsg" class="error"></div>
 <div id="successMsg" class="success"></div>
 
 <div class="card">
+<div class="tabs">
+<button class="tab-btn active" data-tab="withdrawals">💸 Withdrawals</button>
+<button class="tab-btn" data-tab="deposits">💰 Deposits</button>
+</div>
+
+<!-- WITHDRAWALS TAB -->
+<div id="withdrawals" class="tab-content active">
 <h2>Withdrawal Requests</h2>
 
-<div id="loadingMsg" class="loading">Loading withdrawals</div>
+<div class="stats" id="withdrawStats"></div>
+
+<div id="withdrawLoadingMsg" class="loading">Loading withdrawals</div>
 
 <table id="withdrawTable" style="display:none;">
 <thead>
 <tr>
+<th>Email</th>
 <th>Amount</th>
 <th>Bank</th>
-<th>Account Number</th>
-<th>Account Name</th>
+<th>Account</th>
 <th>Status</th>
 <th>Actions</th>
 </tr>
@@ -203,7 +297,34 @@ animation:dots 1.5s steps(4, end) infinite;
 </tbody>
 </table>
 
-<div id="noData" class="no-data" style="display:none;">No withdrawal requests found</div>
+<div id="withdrawNoData" class="no-data" style="display:none;">No withdrawal requests</div>
+</div>
+
+<!-- DEPOSITS TAB -->
+<div id="deposits" class="tab-content">
+<h2>Deposit Requests</h2>
+
+<div class="stats" id="depositStats"></div>
+
+<div id="depositLoadingMsg" class="loading">Loading deposits</div>
+
+<table id="depositTable" style="display:none;">
+<thead>
+<tr>
+<th>Email</th>
+<th>Amount</th>
+<th>Status</th>
+<th>Date</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="depositTableBody">
+</tbody>
+</table>
+
+<div id="depositNoData" class="no-data" style="display:none;">No deposit requests</div>
+</div>
 
 </div>
 
@@ -221,7 +342,9 @@ from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import {
 getFirestore,
 collection,
-getDocs
+getDocs,
+updateDoc,
+doc
 }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
@@ -248,7 +371,7 @@ return;
 }
 
 if(user.email !== ADMIN_EMAIL){
-showError("Access Denied: You do not have admin privileges.");
+showError("❌ Access Denied: Admin access only");
 setTimeout(()=>{
 window.location.href="dashboard.html";
 }, 2000);
@@ -257,6 +380,7 @@ return;
 
 document.getElementById("adminEmail").innerText = user.email;
 loadWithdrawals();
+loadDeposits();
 
 });
 
@@ -279,66 +403,180 @@ successMsg.style.display = "none";
 }
 
 async function loadWithdrawals(){
-
 try {
-
-const querySnapshot = await getDocs(collection(db,"withdrawals"));
-
+const querySnapshot = await getDocs(collection(db, "withdrawals"));
 let html = "";
 let hasData = false;
+let pending = 0, approved = 0, declined = 0;
 
-querySnapshot.forEach((doc)=>{
-
+querySnapshot.forEach((docSnap)=>{
 hasData = true;
-const data = doc.data();
+const data = docSnap.data();
 const status = data.status || "pending";
+
+if(status === "pending") pending++;
+if(status === "approved") approved++;
+if(status === "declined") declined++;
 
 html += `
 <tr>
-<td>₦${parseFloat(data.amount || 0).toFixed(2)}</td>
+<td>${data.userEmail || "N/A"}</td>
+<td class="amount">₦${parseFloat(data.amount || 0).toFixed(2)}</td>
 <td>${data.bank || "N/A"}</td>
 <td>${data.accountNumber || "N/A"}</td>
-<td>${data.accountName || "N/A"}</td>
 <td><span class="status ${status}">${status.toUpperCase()}</span></td>
-<td>
-<button class="btn-approve" onclick="approveWithdrawal('${doc.id}')">Approve</button>
-<button class="btn-deny" onclick="denyWithdrawal('${doc.id}')">Deny</button>
+<td style="min-width:120px;">
+<button class="btn-approve" onclick="approveWithdrawal('${docSnap.id}', this)" ${status !== "pending" ? "disabled" : ""}>✓ Approve</button>
+<button class="btn-decline" onclick="declineWithdrawal('${docSnap.id}', this)" ${status !== "pending" ? "disabled" : ""}>✕ Decline</button>
 </td>
 </tr>
 `;
-
 });
 
 const tbody = document.getElementById("withdrawTableBody");
 tbody.innerHTML = html;
 
-document.getElementById("loadingMsg").style.display = "none";
+// Update stats
+document.getElementById("withdrawStats").innerHTML = `
+<div class="stat-box"><h3>Pending</h3><div class="number">${pending}</div></div>
+<div class="stat-box"><h3>Approved</h3><div class="number">${approved}</div></div>
+<div class="stat-box"><h3>Declined</h3><div class="number">${declined}</div></div>
+`;
+
+document.getElementById("withdrawLoadingMsg").style.display = "none";
 
 if(hasData){
 document.getElementById("withdrawTable").style.display = "table";
-document.getElementById("noData").style.display = "none";
+document.getElementById("withdrawNoData").style.display = "none";
 } else {
 document.getElementById("withdrawTable").style.display = "none";
-document.getElementById("noData").style.display = "block";
+document.getElementById("withdrawNoData").style.display = "block";
 }
 
 } catch(error){
 showError("Error loading withdrawals: " + error.message);
-document.getElementById("loadingMsg").style.display = "none";
-console.error(error);
+document.getElementById("withdrawLoadingMsg").style.display = "none";
+}
 }
 
+async function loadDeposits(){
+try {
+const querySnapshot = await getDocs(collection(db, "deposits"));
+let html = "";
+let hasData = false;
+let pending = 0, approved = 0, declined = 0;
+
+querySnapshot.forEach((docSnap)=>{
+hasData = true;
+const data = docSnap.data();
+const status = data.status || "pending";
+
+if(status === "pending") pending++;
+if(status === "approved") approved++;
+if(status === "declined") declined++;
+
+const date = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : "N/A";
+
+html += `
+<tr>
+<td>${data.userEmail || "N/A"}</td>
+<td class="amount">₦${parseFloat(data.amount || 0).toFixed(2)}</td>
+<td><span class="status ${status}">${status.toUpperCase()}</span></td>
+<td>${date}</td>
+<td style="min-width:120px;">
+<button class="btn-approve" onclick="approveDeposit('${docSnap.id}', this)" ${status !== "pending" ? "disabled" : ""}>✓ Approve</button>
+<button class="btn-decline" onclick="declineDeposit('${docSnap.id}', this)" ${status !== "pending" ? "disabled" : ""}>✕ Decline</button>
+</td>
+</tr>
+`;
+});
+
+const tbody = document.getElementById("depositTableBody");
+tbody.innerHTML = html;
+
+// Update stats
+document.getElementById("depositStats").innerHTML = `
+<div class="stat-box"><h3>Pending</h3><div class="number">${pending}</div></div>
+<div class="stat-box"><h3>Approved</h3><div class="number">${approved}</div></div>
+<div class="stat-box"><h3>Declined</h3><div class="number">${declined}</div></div>
+`;
+
+document.getElementById("depositLoadingMsg").style.display = "none";
+
+if(hasData){
+document.getElementById("depositTable").style.display = "table";
+document.getElementById("depositNoData").style.display = "none";
+} else {
+document.getElementById("depositTable").style.display = "none";
+document.getElementById("depositNoData").style.display = "block";
 }
 
-window.approveWithdrawal = function(docId){
-showSuccess("Withdrawal " + docId + " approved! (Feature coming soon)");
+} catch(error){
+showError("Error loading deposits: " + error.message);
+document.getElementById("depositLoadingMsg").style.display = "none";
+}
+}
+
+window.approveWithdrawal = async function(docId, btn){
+btn.disabled = true;
+try {
+await updateDoc(doc(db, "withdrawals", docId), { status: "approved" });
+showSuccess("✅ Withdrawal approved!");
+loadWithdrawals();
+} catch(error){
+showError("Error: " + error.message);
+btn.disabled = false;
+}
 };
 
-window.denyWithdrawal = function(docId){
-showSuccess("Withdrawal " + docId + " denied! (Feature coming soon)");
+window.declineWithdrawal = async function(docId, btn){
+btn.disabled = true;
+try {
+await updateDoc(doc(db, "withdrawals", docId), { status: "declined" });
+showSuccess("❌ Withdrawal declined");
+loadWithdrawals();
+} catch(error){
+showError("Error: " + error.message);
+btn.disabled = false;
+}
 };
 
-document.getElementById("backBtn").addEventListener("click",()=>{
+window.approveDeposit = async function(docId, btn){
+btn.disabled = true;
+try {
+await updateDoc(doc(db, "deposits", docId), { status: "approved" });
+showSuccess("✅ Deposit approved!");
+loadDeposits();
+} catch(error){
+showError("Error: " + error.message);
+btn.disabled = false;
+}
+};
+
+window.declineDeposit = async function(docId, btn){
+btn.disabled = true;
+try {
+await updateDoc(doc(db, "deposits", docId), { status: "declined" });
+showSuccess("❌ Deposit declined");
+loadDeposits();
+} catch(error){
+showError("Error: " + error.message);
+btn.disabled = false;
+}
+};
+
+// Tab switching
+document.querySelectorAll(".tab-btn").forEach(btn => {
+btn.addEventListener("click", ()=>{
+document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+
+btn.classList.add("active");
+document.getElementById(btn.dataset.tab).classList.add("active");
+});
+});
+
+document.getElementById("backBtn").addEventListener("click", ()=>{
 window.location.href="dashboard.html";
 });
 
